@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { OctagonAlertIcon } from "lucide-react";
-
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,16 +23,17 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 
-const formSchema = z.object({
-  name: z.string().min(1, { message: "Name is required"}),
-  email: z.email(),
-  password: z.string().min(1, { message: "Password is required" }),
-  confirmPassword: z.string().min(1, { message: "Password is required"})
-})
-.refine(( data ) => data.password === data.confirmPassword, {
-  message: "Password don't match",
-  path: ["confirmPassword"],
-})
+const formSchema = z
+  .object({
+    name: z.string().min(1, { message: "Name is required" }),
+    email: z.email(),
+    password: z.string().min(1, { message: "Password is required" }),
+    confirmPassword: z.string().min(1, { message: "Password is required" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password don't match",
+    path: ["confirmPassword"],
+  });
 export const SignUpView = () => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -46,19 +47,19 @@ export const SignUpView = () => {
       {
         name: data.name,
         email: data.email,
-        password: data.password
+        password: data.password,
       },
       {
         onSuccess: () => {
-          setPending(false)
+          setPending(false);
           router.push("/");
         },
         onError: ({ error }) => {
           setError(error.message);
-        }
+        },
       }
     );
-  }
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -127,7 +128,11 @@ export const SignUpView = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="******" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="******"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -142,7 +147,11 @@ export const SignUpView = () => {
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="******" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="******"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -151,15 +160,11 @@ export const SignUpView = () => {
                 </div>
                 {error && (
                   <Alert className="bg-destructive/10 border-none">
-                    <OctagonAlertIcon className="h-4 w-4 text-destructive!"/>
-                    <AlertTitle>{ error }</AlertTitle>
+                    <OctagonAlertIcon className="h-4 w-4 text-destructive!" />
+                    <AlertTitle>{error}</AlertTitle>
                   </Alert>
                 )}
-                <Button
-                  disabled={pending}
-                  type="submit"
-                  className="w-full"
-                >
+                <Button disabled={pending} type="submit" className="w-full">
                   Sign up
                 </Button>
                 <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -170,25 +175,38 @@ export const SignUpView = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <Button
                     disabled={pending}
+                     onClick={() => {
+                      authClient.signIn.social({
+                        provider: "google",
+                      });
+                    }}
                     variant="outline"
                     type="button"
                     className="w-full"
                   >
-                    Google
+                    <FaGoogle/>
                   </Button>
-                   <Button
+                  <Button
                     disabled={pending}
+                    onClick={() => {
+                      authClient.signIn.social({
+                        provider: "github",
+                      });
+                    }}
                     variant="outline"
                     type="button"
                     className="w-full"
                   >
-                    Github
+                    <FaGithub/>
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Already have an account?{""}
-                  <Link href="/sign-in" className="underline underline-offset-4">
-                     Sign in
+                  <Link
+                    href="/sign-in"
+                    className="underline underline-offset-4"
+                  >
+                    Sign in
                   </Link>
                 </div>
               </div>
@@ -201,7 +219,8 @@ export const SignUpView = () => {
         </CardContent>
       </Card>
       <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        and <a href="#">Privacy Policy</a>
       </div>
     </div>
   );
