@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useAgentsFilters } from "../../hooks/use-agents-filters";
 import { AgentsSearchFilter } from "./agents-search-filters";
 import { DEFAULT_PAGE } from "@/constants";
+import { ScrollArea, ScrollAreaScrollbar } from "@radix-ui/react-scroll-area";
 
 export const AgentListHeader = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -31,7 +32,8 @@ export const AgentListHeader = () => {
             New Agent
           </Button>
         </div>
-        <div className="flex items-center gap-x-4 p-1">
+        <ScrollArea>
+          <div className="flex items-center gap-x-4 p-1">
           <AgentsSearchFilter/>
           {isAnyFilterModified && (
             <Button variant="outline" size="sm" onClick={onClearFilters}>
@@ -40,6 +42,8 @@ export const AgentListHeader = () => {
             </Button>
           )}
         </div>
+        <ScrollAreaScrollbar orientation="horizontal" />
+        </ScrollArea>
       </div>
     </>
   );
