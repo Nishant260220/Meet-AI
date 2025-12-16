@@ -3,7 +3,7 @@ import { ErrorState } from "@/components/error-state";
 import { LoaderState } from "@/components/loader-state";
 import { MeetingIdViewHeader } from "../components/meeting-id-view-header";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useConfirm } from "@/hooks/use-confirm";
 import { UpdateMeetingDialog } from "../components/update-meeting-dialog";
