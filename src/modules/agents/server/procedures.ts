@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { agents } from "@/db/schema";
-import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { createTRPCRouter, premiumProcedure, protectedProcedure } from "@/trpc/init";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schema";
 import z from "zod";
 import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
@@ -11,7 +11,7 @@ import {
   MIN_PAGE_SIZE,
 } from "@/constants";
 import { TRPCError } from "@trpc/server";
-// import { TRPCError } from "@trpc/server";
+
 
 export const agentsRouter = createTRPCRouter({
   update: protectedProcedure
@@ -74,7 +74,6 @@ export const agentsRouter = createTRPCRouter({
       return existingAgent;
     }),
 
-  // TODO: Change 'getMany' to use 'Protectedprocedure'
   getMany: protectedProcedure
     .input(
       z.object({
@@ -122,11 +121,9 @@ export const agentsRouter = createTRPCRouter({
         total: total.count,
         totalPages,
       };
-      // await new Promise((resolve) => setTimeout(resolve, 5000));
-      // throw new TRPCError({ code: "BAD_REQUEST"});
     }),
 
-  create: protectedProcedure
+  create: premiumProcedure("agents")
     .input(agentsInsertSchema)
     .mutation(async ({ input, ctx }) => {
       const [createdAgents] = await db
